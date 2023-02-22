@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Music Library - {{ song.title }}</title>
+  </head>
+  <body>
+    <h1>{{ song.title }}</h1>
+    <h2>{{ song.artist }} ({{ song.album }})</h2>
+    <audio controls>
+      <source src="{{ url_for('static', filename=song.filename) }}" type="audio/mpeg">
+      Your browser does not support the audio element.
+    </audio>
+    <br>
+    <a href="{{ url_for('download', id=song.id) }}">Download</a>
+    <a href="{{ url_for('index') }}">Back to all songs</a>
+  </body>
+</html>

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Music Management</title>
+  </head>
+  <body>
+    <h1>Music Management</h1>
+    <h2>Uploaded Songs</h2>
+    <table>
+      <tr>
+        <th>Title</th>
+        <th>Artist</th>
+        <th>Album</th>
+        <th>Stream</th>
+        <th>Delete</th>
+      </tr>
+      {% for song in songs %}
+        <tr>
+          <td>{{ song.title }}</td>
+          <td>{{ song.artist }}</td>
+          <td>{{ song.album }}</td>
+          <td><a href="{{ url_for('stream', filename=song.filename) }}">Play</a></td>
+          <td><a href="{{ url_for('delete', filename=song.filename) }}">Delete</a></td>
+        </tr>
+      {% endfor %}
+    </table>
+    <h2>Upload a Song</h2>
+    <form method="post" action="{{ url_for('upload') }}" enctype="multipart/form-data">
+      <label for="title">Title:</label>
+      <input type="text" id="title" name="title" required><br>
+      <label for="artist">Artist:</label>
+      <input type="text" id="artist" name="artist" required><br>
+      <label for="album">Album:</label>
+      <input type="text" id="album" name="album" required><br>
+      <label for="file">Choose a file:</label>
+      <input type="file" id="file" name="file" accept=".mp3" required><br>
+      <input type="submit" value="Upload">
+    </form>
+    <h2>Search for a Song</h2>
+    <form method="post" action="{{ url_for('search') }}">
+      <label for="keyword">Keyword:</label>
+      <input type="text" id="keyword" name="keyword" required>
+      <input type="submit" value="Search">
+    </form>
+  </body>
+</html>
