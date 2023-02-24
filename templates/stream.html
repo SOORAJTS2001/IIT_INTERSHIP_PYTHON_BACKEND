@@ -4,7 +4,7 @@
 <div class="container mt-4">
   <h2>{{ song.title }}</h2>
   <audio controls>
-    <source src="/home/sooraj/Documents/PROJECTS/IIT_INTERNS/uploads/updated_intro_3.mp3" type="audio/mp3">
+    <source src="{{ song.url }}" type="audio/mp3">
     Your browser does not support the audio element.
   </audio>
   <a href="{{ url_for('download', id=song.id) }}" class="btn btn-primary mt-2">Download</a>
