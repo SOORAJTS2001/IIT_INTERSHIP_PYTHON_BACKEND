@@ -1,84 +1,75 @@
 from flask import Flask, render_template, request, redirect, url_for, send_file
-from werkzeug.utils import secure_filename
-from flask import flash
+from flask_sqlalchemy import SQLAlchemy
 import os
+from werkzeug.utils import secure_filename
 
-app = Flask(__name__, template_folder='templates')
+app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(app.instance_path, 'songs.db')
 app.config['UPLOAD_FOLDER'] = 'uploads'
-app.config['ALLOWED_EXTENSIONS'] = {'mp3'}
+app.app_context().push()
+# set up application context
+with app.app_context():
+    db = SQLAlchemy(app)
 
-# Define the Song model
-class Song:
-    def __init__(self, title, artist, album, filename, url):
-        self.title = title
-        self.artist = artist
-        self.album = album
-        self.filename = filename
-        self.url = url
 
-# Define a list to hold all the uploaded songs
-songs_list = []
 
-# Define a function to check if the file extension is allowed
-def allowed_file(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
-
-# Define the index route
+class Song(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(100))
+    artist = db.Column(db.String(100))
+    album = db.Column(db.String(100))
+    url = db.Column(db.String(100))
+db.create_all()
 @app.route('/')
 def index():
-    return render_template('index.html', songs=songs_list)
+    songs = Song.query.all()
+    return render_template('song_list.html', songs=songs)
 
-# Define the upload route
 @app.route('/upload', methods=['GET', 'POST'])
 def upload():
     if request.method == 'POST':
-        # Check if the post request has the file part
-        if 'file' not in request.files:
-            flash('No file part')
-            return redirect(request.url)
+        title = request.form['title']
+        artist = request.form['artist']
+        album = request.form['album']
         file = request.files['file']
-        # If the user does not select a file, the browser submits an empty part without a filename
-        if file.filename == '':
-            flash('No selected file')
-            return redirect(request.url)
-        # Check if the file extension is allowed
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            url = request.host_url + 'uploads/' + filename
-            song = Song(request.form['title'], request.form['artist'], request.form['album'], filename, url)
-            songs_list.append(song)
-            return redirect(url_for('index'))
+        filename = secure_filename(file.filename)
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        url = os.path.abspath(app.config['UPLOAD_FOLDER']) + '/' + filename
+        print(url)
+        song = Song(title=title, artist=artist, album=album, url=url)
+        db.session.add(song)
+        db.session.commit()
+        return redirect(url_for('index'))
     return render_template('upload.html')
 
-# Define the delete route
-@app.route('/delete/<filename>')
-def delete(filename):
-    # Remove the song from the songs list and delete the file from the server
-    for song in songs_list:
-        if song.filename == filename:
-            songs_list.remove(song)
-            os.remove(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-    return redirect(url_for('index'))
-
-# Define the search route
 @app.route('/search', methods=['GET', 'POST'])
 def search():
     if request.method == 'POST':
-        keyword = request.form['keyword']
-        print(keyword)
-        search_results = []
-        for song in songs_list:
-            if keyword.lower() in song.title.lower() or keyword.lower() in song.artist.lower() or keyword.lower() in song.album.lower():
-                search_results.append(song)
-        return render_template('search.html', keyword=keyword, search_results=search_results)
+        query = request.form['query']
+        songs = Song.query.filter(
+            (Song.title.like('%' + query + '%')) |
+            (Song.artist.like('%' + query + '%')) |
+            (Song.album.like('%' + query + '%'))
+        ).all()
+        return render_template('song_list.html', songs=songs)
     return render_template('search.html')
 
-# Define the stream route
-@app.route('/stream/<filename>')
-def stream(filename):
-    return send_file(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+@app.route('/delete/<int:id>', methods=['POST','GET'])
+def delete(id):
+    song = Song.query.get_or_404(id)
+    db.session.delete(song)
+    db.session.commit()
+    return redirect(url_for('index'))
+
+@app.route('/play/<int:id>')
+def play(id):
+    song = Song.query.get_or_404(id)
+    return render_template('stream.html', song=song)
+
+@app.route('/download/<int:id>')
+def download(id):
+    song = Song.query.get_or_404(id)
+    return send_file(song.url, as_attachment=True)
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -1,26 +1,42 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>Music Library - Search</title>
-  </head>
-  <body>
-    <h1>Search for a song</h1>
-    <form method="POST" action="{{ url_for('search') }}">
-      <label for="search-term">Search term:</label>
-      <input type="text" id="search-term" name="search-term" required>
-      <input type="submit" value="Search">
-    </form>
-    <br>
-    {% if songs %}
-      <h2>Search results:</h2>
-      <ul>
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Search</h1>
+  <form method="POST">
+    <div class="form-group">
+      <label for="query">Search query:</label>
+      <input type="text" class="form-control" id="query" name="query" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Search</button>
+  </form>
+
+  {% if songs %}
+    <h2>Search results:</h2>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Artist</th>
+          <th>Album</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
         {% for song in songs %}
-          <li>
-            <a href="{{ url_for('stream', id=song.id) }}">{{ song.title }} - {{ song.artist }} ({{ song.album }})</a>
-          </li>
+          <tr>
+            <td>{{ song.title }}</td>
+            <td>{{ song.artist }}</td>
+            <td>{{ song.album }}</td>
+            <td>
+              <a href="{{ url_for('play', id=song.id) }}" class="btn btn-success">Play</a>
+              <a href="{{ url_for('download', id=song.id) }}" class="btn btn-info">Download</a>
+              <form action="{{ url_for('delete', id=song.id) }}" method="POST" style="display: inline-block;">
+                <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure?')">Delete</button>
+              </form>
+            </td>
+          </tr>
         {% endfor %}
-      </ul>
-    {% endif %}
-    <a href="{{ url_for('index') }}">Back to all songs</a>
-  </body>
-</html>
+      </tbody>
+    </table>
+  {% endif %}
+{% endblock %}
