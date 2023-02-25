@@ -21,6 +21,7 @@ To run this application, you'll need the following installed on your system:
 6. Create the database by running the following commands:
 
 ```
+$ export FLASK_APP=app.py
 $ flask db init
 $ flask db migrate -m "Initial migration."
 $ flask db upgrade
