@@ -30,7 +30,17 @@ $ export FLASK_APP=app.py
 ```
 $ flask run
 ```
-8. Open your browser and go to `http://localhost:5000/`.
+8. You could also run the shell script `run.sh` instead of typing the above commands, which sets the `FLASK_APP` environment variable to `app.py` and runs the app using `flask run`. 
+To run the script,
+first execute the script using
+```
+$ chmod +x run.sh
+```
+then run it using
+```
+$ ./run.sh
+```
+9.  Finally, Open your browser and go to `http://localhost:5000/`.
 
 ## Usage
 
@@ -50,9 +60,8 @@ $ flask run
 
 ### Playing Music
 
-1. Click on the "View" button next to a song in the song list.
-2. The music player will be displayed on the page.
-3. Click the "Play" button to play the song.
+1. Play option for each song is available in the song list.
+2. Click the "Play" button to play the song,you would be redirected to a seperate page.
 
 ### Downloading Music
 
