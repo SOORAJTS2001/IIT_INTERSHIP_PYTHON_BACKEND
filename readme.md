@@ -13,18 +13,15 @@ To run this application, you'll need the following installed on your system:
 
 ## Installation
 
-1. Clone this repository to your local machine using `https://github.com/username/flask-music-app.git`.
+1. Clone this repository to your local machine using `git clone --single-branch --branch master https://github.com/SOORAJTS2001/IIT_INTERSHIP_PYTHON_BACKEND`.
 2. `cd` into the project directory.
 3. Create a virtual environment using `python -m venv venv`.
 4. Activate the virtual environment using `source venv/bin/activate`.
 5. Install the required packages using `pip install -r requirements.txt`.
-6. Create the database by running the following commands:
+6. Set the `FLASK_APP` environment variable to `app.py` using
 
 ```
 $ export FLASK_APP=app.py
-$ flask db init
-$ flask db migrate -m "Initial migration."
-$ flask db upgrade
 ```
 
 
