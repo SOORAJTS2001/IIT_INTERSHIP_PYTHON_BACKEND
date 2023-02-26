@@ -13,12 +13,13 @@ To run this application, you'll need the following installed on your system:
 
 ## Installation
 
-1. Clone this repository to your local machine using `git clone --single-branch --branch master https://github.com/SOORAJTS2001/IIT_INTERSHIP_PYTHON_BACKEND`.
-2. `cd` into the project directory.
-3. Create a virtual environment using `python -m venv venv`.
-4. Activate the virtual environment using `source venv/bin/activate`.
-5. Install the required packages using `pip install -r requirements.txt`.
-6. Set the `FLASK_APP` environment variable to `app.py` using
+1. Clone this repository to your local machine using 
+2. `git clone --single-branch --branch master https://github.com/SOORAJTS2001/IIT_INTERSHIP_PYTHON_BACKEND`.
+3. `cd` into the project directory.
+4. Create a virtual environment using `python -m venv venv`.
+5. Activate the virtual environment using `source venv/bin/activate`.
+6. Install the required packages using `pip install -r requirements.txt`.
+7. Set the `FLASK_APP` environment variable to `app.py` using
 
 ```
 $ export FLASK_APP=app.py

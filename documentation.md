@@ -23,6 +23,7 @@ App setup:
 - Set the maximum file size to 16 MB.
 - Set a secret key to enable secure sessions.
 - Create a context for the application.
+- Uploaded songs are stored in the static folder
 
 Define a Song model using SQLAlchemy:
 
@@ -64,3 +65,17 @@ This is the play template for the application. It contains a music player for pl
 ## requirements.txt
 
 This file contains a list of all the required packages to run the application.
+
+## run.sh
+
+This script sets the FLASK_APP environment variable to the name of your Flask application file (app.py in this case), and sets the FLASK_DEBUG variable to 0 so that the Flask application runs in development mode. Finally, it runs the Flask application using the flask run command.
+
+To run the script,
+first execute the script using
+```
+chmod +x run.sh
+```
+then run it using
+```
+./run.sh
+```
